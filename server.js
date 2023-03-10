@@ -72,6 +72,20 @@ io.on('connection', socket => {
 
     socket.on(ACTIONS.LEAVE, leaveRoom);
     socket.on('disconnecting', leaveRoom);
+
+    socket.on(ACTIONS.RELAY_SDP, ({peerId, sessionDescription}) => {
+        io.to(peerId).emit(ACTIONS.SESSION_DESCRIPTION, {
+            peerID: socket.id,
+            sessionDescription,
+        });
+    });
+
+    socket.on(ACTIONS.RELAY_ICE, ({peerId, iceCandidate}) => {
+        io.to(peerId).emit(ACTIONS.ICE_CANDIDATE, {
+            peerID: socket.id,
+            iceCandidate
+        })
+    })
 })
 
 server.listen(PORT, () => {
