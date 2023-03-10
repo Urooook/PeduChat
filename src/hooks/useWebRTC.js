@@ -40,7 +40,13 @@ export function useWebRTC(roomId) {
 
         startCapture()
             .then(() => socket.emit(ACTIONS.JOIN, {room: roomId}))
-            .catch(e => console.error('Error getting userMedia:', e))
+            .catch(e => console.error('Error getting userMedia:', e));
+
+        return () => {
+            localMediaStream.current.getTracks().forEach(track => track.stop());
+
+            socket.emit(ACTIONS.LEAVE);
+        }
     }, [roomId])
 
     const provideMediaRef = useCallback((id, node) => {
