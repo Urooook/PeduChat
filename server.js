@@ -26,13 +26,13 @@ io.on('connection', socket => {
     socket.on(ACTIONS.JOIN, config => {
         const {room: roomId} = config;
         const {rooms: joinedRooms} = socket;
-
-        if(Array.from(joinedRooms).includes(roomId)) {
-            return console.warn(`Alredy joined to ${roomId}`);
-        }
+        // console.log(joinedRooms)
+        // if(!Array.from(joinedRooms).includes(roomId)) {
+        //     return console.warn(`Alredy joined to ${roomId}`);
+        // }
 
         const clients = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
-
+        // console.log(clients)
         clients.forEach(clientID => {
             io.to(clientID).emit(ACTIONS.ADD_PEER, {
                 peerID: socket.id,
@@ -78,6 +78,7 @@ io.on('connection', socket => {
             peerID: socket.id,
             sessionDescription,
         });
+        console.log('5555', peerId)
     });
 
     socket.on(ACTIONS.RELAY_ICE, ({peerId, iceCandidate}) => {

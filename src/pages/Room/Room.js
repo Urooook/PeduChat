@@ -1,6 +1,7 @@
 import React from 'react';
 import {useParams} from "react-router";
 import {LOCAL_VIDEO, useWebRTC} from "../../hooks/useWebRTC";
+import Video from "./Video";
 
 function layout(clientsNumber = 1) {
     const pairs = Array.from({length: clientsNumber})
@@ -36,26 +37,13 @@ const Room = () => {
 
     const {clients, provideMediaRef} = useWebRTC(roomId);
     const videoLayout = layout(clients.length);
-
+    console.log(clients)
     return (
-        <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexWrap: 'wrap',
-            height: '100vh',
-        }}>
+        <div >
             {clients.map((clientId, index) => {
                 return (
-                    <div key={clientId} style={videoLayout[index]} id={clientId}>
-                        <video
-                            ref={instance => {
-                               provideMediaRef(clientId, instance);
-                            }}
-                            autoPlay
-                            playsInline
-                            muted={clientId === LOCAL_VIDEO}
-                        />
+                    <div key={clientId} id={clientId}>
+                        <Video clientId={clientId} provideMediaRef={provideMediaRef} />
                     </div>
                 )
             })}
