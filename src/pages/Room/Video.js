@@ -6,19 +6,17 @@ const Video = ({clientId, provideMediaRef}) => {
     const refVideo = useRef();
 
     useEffect(() => {
-         provideMediaRef(clientId, refVideo);
-    }, []);
+         provideMediaRef(clientId, refVideo.current);
+    }, [refVideo, clientId]);
 
-    console.log('SRCSRCSRC', src);
+    console.log('SRCSRCSRC', clientId, refVideo);
     return (
-        <div>
             <video
                 ref={refVideo}
                 autoPlay
                 playsInline
                 muted={clientId === LOCAL_VIDEO}
             />
-        </div>
     );
 };
 

@@ -15,7 +15,7 @@ export function useWebRTC(roomId) {
         }
     }, [clients, updateClients])*/
 
-    const addNewClient = useCallback((newClient, cb) => {
+    const addNewClient =  useCallback( (newClient, cb) => {
         updateClients(list => {
             if (!list.includes(newClient)) {
                 return [...list, newClient]
@@ -101,7 +101,7 @@ export function useWebRTC(roomId) {
             peerConnections.current[peerID].onicecandidate = event => {
                 if (event.candidate) {
                     socket.emit(ACTIONS.RELAY_ICE, {
-                        peerID,
+                        peerId: peerID,
                         iceCandidate: event.candidate,
                     });
                 }
@@ -119,15 +119,17 @@ export function useWebRTC(roomId) {
             // });
 
                 let tracksNumber = 0;
-            peerConnections.current[peerID].ontrack = ({streams: [remoteStream]}) => {
+            peerConnections.current[peerID].ontrack =  ({streams: [remoteStream]}) => {
                 tracksNumber++
                 console.log(99999999, remoteStream)
                 if (tracksNumber === 2) { // video & audio tracks received
                     tracksNumber = 0;
                     addNewClient(peerID, () => {
+                        console.log('Пизда', remoteStream)
                         if (peerMediaElements.current[peerID]) {
                             peerMediaElements.current[peerID].srcObject = remoteStream;
-                            console.log('gagagagagagagagag',peerMediaElements.current[peerID])
+                            console.log('gagagagagagagagag',peerMediaElements.current[peerID].srcObject)
+                            // console.log('gagagagagagagagag',peerMediaElements.current[LOCAL_VIDEO])
 
                         } else {
                             // FIX LONG RENDER IN CASE OF MANY CLIENTS
@@ -215,9 +217,11 @@ export function useWebRTC(roomId) {
     }, [peerMediaElements.current])
 
     const provideMediaRef = useCallback((id, node) => {
-        console.log('peerMediaElements.current[id] ',node.current);
+        // console.log(`peerMediaElements.current[id] ${id}`, peerMediaElements.current[id]);
+        // node(peerMediaElements.current[id])
+        peerMediaElements.current[id] = node;
+        console.log(`peerMediaElements.current[id] `, peerMediaElements.current);
 
-        peerMediaElements.current[id] = node.current;
     }, [])
 
     return {clients, provideMediaRef};

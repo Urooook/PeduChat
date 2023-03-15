@@ -27,9 +27,9 @@ io.on('connection', socket => {
         const {room: roomId} = config;
         const {rooms: joinedRooms} = socket;
         // console.log(joinedRooms)
-        // if(!Array.from(joinedRooms).includes(roomId)) {
-        //     return console.warn(`Alredy joined to ${roomId}`);
-        // }
+        if(Array.from(joinedRooms).includes(roomId)) {
+            return console.warn(`Alredy joined to ${roomId}`);
+        }
 
         const clients = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
         // console.log(clients)

@@ -37,7 +37,7 @@ const Room = () => {
 
     const {clients, provideMediaRef} = useWebRTC(roomId);
     const videoLayout = layout(clients.length);
-    console.log(clients)
+
     return (
         <div >
             {clients.map((clientId, index) => {
