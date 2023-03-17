@@ -35,16 +35,16 @@ export function useWebRTC(roomId) {
 
     useEffect(() => {
         async function setRemoteMedia({peerID, sessionDescription: remoteDescription}) {
-            console.log(5555555555, peerID)
-            console.log(remoteDescription.type === 'offer')
+            // console.log(5555555555, peerID)
+            // console.log(remoteDescription.type === 'offer')
             // console.log('remoteDescription',remoteDescription)
-            console.log('peerConnections.current[peerID]', peerConnections.current[peerID])
+            // console.log('peerConnections.current[peerID]', peerConnections.current[peerID])
             await peerConnections.current[peerID]?.setRemoteDescription(
                 new RTCSessionDescription(remoteDescription)
             );
-            console.log('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK')
+            // console.log('KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK')
             if(remoteDescription.type === 'offer') {
-                console.log(6666)
+                // console.log(6666)
                 const answer = await peerConnections.current[peerID].createAnswer();
 
                 await peerConnections.current[peerID].setLocalDescription(answer);
@@ -121,14 +121,14 @@ export function useWebRTC(roomId) {
                 let tracksNumber = 0;
             peerConnections.current[peerID].ontrack =  ({streams: [remoteStream]}) => {
                 tracksNumber++
-                console.log(99999999, remoteStream)
+                // console.log(99999999, remoteStream)
                 if (tracksNumber === 2) { // video & audio tracks received
                     tracksNumber = 0;
                     addNewClient(peerID, () => {
-                        console.log('Пизда', remoteStream)
+                        // console.log('Пизда', remoteStream)
                         if (peerMediaElements.current[peerID]) {
                             peerMediaElements.current[peerID].srcObject = remoteStream;
-                            console.log('gagagagagagagagag',peerMediaElements.current[peerID].srcObject)
+                            // console.log('gagagagagagagagag',peerMediaElements.current[peerID].srcObject)
                             // console.log('gagagagagagagagag',peerMediaElements.current[LOCAL_VIDEO])
 
                         } else {
@@ -146,8 +146,6 @@ export function useWebRTC(roomId) {
                             }, 1000);
                         }
                     });
-                } else {
-                    console.log(321)
                 }
             }
 
@@ -155,10 +153,10 @@ export function useWebRTC(roomId) {
                 // console.log(14)
                 peerConnections.current[peerID].addTrack(track, localMediaStream.current);
             });
-            console.log(peerConnections.current[peerID])
+            // console.log(peerConnections.current[peerID])
 
             if (createOffer) {
-                console.log('peerID', peerID)
+                // console.log('peerID', peerID)
 
                 const offer = await peerConnections.current[peerID].createOffer();
 
@@ -183,8 +181,8 @@ export function useWebRTC(roomId) {
             localMediaStream.current = await navigator.mediaDevices.getUserMedia({
                 audio: true,
                 video:  {
-                    width: 1280,
-                    height: 720,
+                    width: { min: 1024, ideal: 1280, max: 1920 },
+                    height: { min: 576, ideal: 720, max: 1080 },
                 }
             });
 
@@ -213,14 +211,14 @@ export function useWebRTC(roomId) {
     }, [roomId])
 
     useEffect(() => {
-        console.log('PEERMEDIA', peerMediaElements.current)
+        // console.log('PEERMEDIA', peerMediaElements.current)
     }, [peerMediaElements.current])
 
     const provideMediaRef = useCallback((id, node) => {
         // console.log(`peerMediaElements.current[id] ${id}`, peerMediaElements.current[id]);
         // node(peerMediaElements.current[id])
         peerMediaElements.current[id] = node;
-        console.log(`peerMediaElements.current[id] `, peerMediaElements.current);
+        // console.log(`peerMediaElements.current[id] `, peerMediaElements.current);
 
     }, [])
 

@@ -87,6 +87,20 @@ io.on('connection', socket => {
             iceCandidate
         })
     })
+
+    socket.on('three', (config) => {
+        console.log(config);
+
+        const clients = Array.from(io.sockets.adapter.rooms.get(config.roomId) || []);
+        console.log(clients)
+        console.log(socket.id)
+        clients.forEach(clientID => {
+            io.to(clientID).emit('three-transform', {
+                clientId: socket.id,
+                figure: config.figure
+            });
+        })
+    })
 })
 
 server.listen(PORT, () => {
